@@ -62,9 +62,8 @@ export function OnboardingScreen05({ onContinue, onBack, onSkip, userInput = "" 
     const generatedTags = generateTagsFromInput(userInput);
     setTags(generatedTags);
     
-    // Set initial selected tags
-    const initialSelected = getInitialSelectedTags(userInput);
-    setSelectedTags(initialSelected);
+    // Start with NO tags selected (all in "off" state)
+    setSelectedTags([]);
     
     // Animate tags appearing one by one
     generatedTags.forEach((_, index) => {

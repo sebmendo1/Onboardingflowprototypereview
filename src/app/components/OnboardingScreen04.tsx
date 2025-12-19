@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import svgPaths from "../../imports/svg-d2kuvgt6ye";
+import svgPaths from "../../imports/svg-w00d9vbhzb";
 
 interface OnboardingScreen04Props {
   onContinue: () => void;
@@ -12,28 +12,30 @@ const DEFAULT_USER_INPUT = "I'd like to learn how to manage my emotions more eff
 const AI_RESPONSE = "That sounds like a great goal! Memento is here to help you accomplish it one step at a time. \n\nRemember: the more you journal, the more you get from the app! You make your own experience.";
 
 export function OnboardingScreen04({ onContinue, onBack, onSkip, userInput = DEFAULT_USER_INPUT }: OnboardingScreen04Props) {
-  const [circleScale, setCircleScale] = useState(1);
+  const [circleSize, setCircleSize] = useState(240);
   const [showUserText, setShowUserText] = useState(false);
   const [showAIBadge, setShowAIBadge] = useState(false);
   const [displayedAIText, setDisplayedAIText] = useState('');
   const [showContinue, setShowContinue] = useState(false);
 
   useEffect(() => {
-    // Animation sequence
+    // Animation sequence matching Figma
     const timeline = [
-      // Shrink circle
-      { delay: 300, action: () => setCircleScale(0.001) },
-      // Show user text
-      { delay: 1000, action: () => setShowUserText(true) },
-      // Show AI badge
-      { delay: 1800, action: () => setShowAIBadge(true) },
+      // Start with circle at 240px (from recording screen)
+      { delay: 0, action: () => setCircleSize(240) },
+      // Shrink circle to 1px (vanishing)
+      { delay: 500, action: () => setCircleSize(1) },
+      // Show user text after circle vanishes
+      { delay: 1200, action: () => setShowUserText(true) },
+      // Show "Memento says..." badge
+      { delay: 2000, action: () => setShowAIBadge(true) },
     ];
 
     timeline.forEach(({ delay, action }) => {
       setTimeout(action, delay);
     });
 
-    // Type out AI response
+    // Type out AI response after badge appears
     const startTyping = setTimeout(() => {
       let currentIndex = 0;
       const typingInterval = setInterval(() => {
@@ -48,7 +50,7 @@ export function OnboardingScreen04({ onContinue, onBack, onSkip, userInput = DEF
       }, 20); // Typing speed
 
       return () => clearInterval(typingInterval);
-    }, 2400);
+    }, 2600);
 
     return () => clearTimeout(startTyping);
   }, []);
@@ -59,18 +61,17 @@ export function OnboardingScreen04({ onContinue, onBack, onSkip, userInput = DEF
       <div 
         className="absolute blur-[30px] filter h-[402px] left-[-64px] rounded-[1e+06px] top-[514px] w-[493px]" 
         style={{ 
-          backgroundImage: "linear-gradient(98.419deg, rgba(97, 37, 177, 0.08) 8.7497%, rgba(30, 99, 211, 0.08) 85.09%)" 
+          backgroundImage: "linear-gradient(98.419deg, rgba(97, 37, 177, 0.06) 8.7497%, rgba(30, 99, 211, 0.06) 85.09%)" 
         }} 
       />
       
-      {/* Purple circle - shrinks to tiny dot */}
+      {/* Purple circle - shrinks to 1px */}
       <div 
-        className="absolute left-1/2 rounded-[1000px] top-1/2 translate-x-[-50%] translate-y-[-50%] transition-all duration-700 ease-out"
+        className="absolute left-1/2 rounded-[1000px] top-[calc(50%+0.5px)] translate-x-[-50%] translate-y-[-50%] transition-all duration-700 ease-out"
         style={{ 
           backgroundImage: "linear-gradient(169.088deg, rgb(167, 127, 219) 1.886%, rgb(87, 33, 156) 99.181%)",
-          width: `${240 * circleScale}px`,
-          height: `${240 * circleScale}px`,
-          opacity: circleScale < 0.1 ? 0 : 1,
+          width: `${circleSize}px`,
+          height: `${circleSize}px`,
         }} 
       />
       
@@ -83,35 +84,38 @@ export function OnboardingScreen04({ onContinue, onBack, onSkip, userInput = DEF
         {userInput}
       </div>
       
-      {/* "Memento says..." badge */}
+      {/* "Memento says..." badge with border */}
       <div 
-        className={`absolute bg-[#f2eefc] content-stretch flex flex-col items-start left-[16px] p-[8px] rounded-[16px] top-[232px] transition-all duration-400 ${
+        className={`absolute left-[16px] top-[248px] transition-all duration-400 ${
           showAIBadge ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
         }`}
       >
-        <div className="content-stretch flex gap-[4px] items-center relative shrink-0">
-          <div className="overflow-clip relative shrink-0 size-[16px]">
-            <div className="absolute aspect-[24/24] bottom-0 left-1/2 overflow-clip top-0 translate-x-[-50%]">
-              <div className="absolute contents inset-[8.33%_8.33%_0.78%_8.73%]">
-                <div className="absolute inset-[8.33%_8.33%_8.73%_8.73%]">
-                  <div className="absolute inset-0">
-                    <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14 14">
-                      <path d={svgPaths.p129c7300} fill="#6125B1" />
-                    </svg>
+        <div className="content-stretch flex flex-col items-start px-[12px] py-[8px] relative rounded-[32px] shrink-0">
+          <div aria-hidden="true" className="absolute border-[#6125b1] border-[1.5px] border-solid inset-0 pointer-events-none rounded-[32px]" />
+          <div className="content-stretch flex gap-[4px] items-center relative shrink-0">
+            <div className="overflow-clip relative shrink-0 size-[16px]">
+              <div className="absolute aspect-[24/24] bottom-0 left-1/2 overflow-clip top-0 translate-x-[-50%]">
+                <div className="absolute contents inset-[8.33%_8.33%_0.78%_8.73%]">
+                  <div className="absolute inset-[8.33%_8.33%_8.73%_8.73%]">
+                    <div className="absolute inset-0">
+                      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 14 14">
+                        <path d={svgPaths.p129c7300} fill="#6125B1" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+            <p className="font-['Sora:Bold',sans-serif] font-bold leading-[20px] relative shrink-0 text-[#6125b1] text-[14px] text-center text-nowrap">
+              Memento says...
+            </p>
           </div>
-          <p className="font-['Sora:SemiBold',sans-serif] font-semibold leading-[normal] relative shrink-0 text-[#6125b1] text-[11px] text-center text-nowrap">
-            Memento says...
-          </p>
         </div>
       </div>
       
       {/* AI Response - types out */}
       <div 
-        className={`absolute font-['Sora:Regular',sans-serif] font-normal leading-[20px] left-[16px] text-[#1c2329] text-[13px] top-[280px] tracking-[-0.65px] w-[361px] transition-opacity duration-300 ${
+        className={`absolute font-['Sora:Regular',sans-serif] font-normal leading-[20px] left-[16px] text-[#1c2329] text-[14px] top-[308px] w-[361px] transition-opacity duration-300 ${
           displayedAIText ? 'opacity-100' : 'opacity-0'
         }`}
       >
@@ -137,30 +141,11 @@ export function OnboardingScreen04({ onContinue, onBack, onSkip, userInput = DEF
       {/* Back button */}
       <button 
         onClick={onBack}
-        className="absolute left-[16px] size-[40px] top-[36px] cursor-pointer"
+        className="absolute bg-white content-stretch flex items-center left-[16px] p-[8px] rounded-[100px] shadow-[0px_4px_16px_0px_rgba(51,51,51,0.16)] top-[36px] cursor-pointer hover:scale-105 transition-transform"
       >
-        <div className="absolute inset-[-10%_-20%_-30%_-20%]">
-          <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 56 56">
-            <g>
-              <g filter="url(#filter0_d_1_150)">
-                <circle cx="28" cy="24" fill="white" r="20" />
-              </g>
-              <g>
-                <path d="M31 30L25 24L31 18" stroke="black" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-              </g>
-            </g>
-            <defs>
-              <filter colorInterpolationFilters="sRGB" filterUnits="userSpaceOnUse" height="56" id="filter0_d_1_150" width="56" x="0" y="0">
-                <feFlood floodOpacity="0" result="BackgroundImageFix" />
-                <feColorMatrix in="SourceAlpha" result="hardAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
-                <feOffset dy="4" />
-                <feGaussianBlur stdDeviation="4" />
-                <feComposite in2="hardAlpha" operator="out" />
-                <feColorMatrix type="matrix" values="0 0 0 0 0.2 0 0 0 0 0.2 0 0 0 0 0.2 0 0 0 0.16 0" />
-                <feBlend in2="BackgroundImageFix" mode="normal" result="effect1_dropShadow_1_150" />
-                <feBlend in="SourceGraphic" in2="effect1_dropShadow_1_150" mode="normal" result="shape" />
-              </filter>
-            </defs>
+        <div className="relative shrink-0 size-[24px]">
+          <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 24 24">
+            <path d="M15 18L9 12L15 6" stroke="#2F3943" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
           </svg>
         </div>
       </button>

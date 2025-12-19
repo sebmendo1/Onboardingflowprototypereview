@@ -4,8 +4,11 @@ import { OnboardingScreen02 } from './components/OnboardingScreen02';
 import { OnboardingScreen03 } from './components/OnboardingScreen03';
 import { OnboardingScreen04 } from './components/OnboardingScreen04';
 import { OnboardingScreen05 } from './components/OnboardingScreen05';
+import { OnboardingScreen06 } from './components/OnboardingScreen06';
+import { OnboardingScreen07 } from './components/OnboardingScreen07';
+import { Dashboard } from './components/Dashboard';
 
-type OnboardingStep = 'welcome' | 'voice-prompt' | 'recording' | 'ai-response' | 'tag-selection' | 'complete';
+type OnboardingStep = 'welcome' | 'voice-prompt' | 'recording' | 'ai-response' | 'tag-selection' | 'blank-transition' | 'lets-get-started' | 'dashboard' | 'complete';
 
 interface UserData {
   firstName: string;
@@ -44,7 +47,15 @@ export default function App() {
   };
 
   const handleTagSelectionContinue = () => {
-    setCurrentStep('complete');
+    setCurrentStep('blank-transition');
+  };
+
+  const handleBlankTransitionContinue = () => {
+    setCurrentStep('lets-get-started');
+  };
+
+  const handleLetsGetStartedContinue = () => {
+    setCurrentStep('dashboard');
   };
 
   const handleSkip = () => {
@@ -60,6 +71,12 @@ export default function App() {
       setCurrentStep('recording');
     } else if (currentStep === 'tag-selection') {
       setCurrentStep('ai-response');
+    } else if (currentStep === 'blank-transition') {
+      setCurrentStep('tag-selection');
+    } else if (currentStep === 'lets-get-started') {
+      setCurrentStep('blank-transition');
+    } else if (currentStep === 'dashboard') {
+      setCurrentStep('lets-get-started');
     }
   };
 
@@ -112,6 +129,22 @@ export default function App() {
               onContinue={handleTagSelectionContinue}
               onBack={handleBack}
               onSkip={handleSkip}
+            />
+          )}
+          
+          {currentStep === 'blank-transition' && (
+            <OnboardingScreen06 onContinue={handleBlankTransitionContinue} />
+          )}
+          
+          {currentStep === 'lets-get-started' && (
+            <OnboardingScreen07
+              onContinue={handleLetsGetStartedContinue}
+            />
+          )}
+          
+          {currentStep === 'dashboard' && (
+            <Dashboard
+              onCreateEntry={() => console.log('Create entry clicked')}
             />
           )}
           
@@ -179,6 +212,24 @@ export default function App() {
                         className="px-3 py-1 bg-white rounded-lg text-xs hover:bg-gray-50"
                       >
                         Screen 5
+                      </button>
+                      <button
+                        onClick={() => setCurrentStep('blank-transition')}
+                        className="px-3 py-1 bg-white rounded-lg text-xs hover:bg-gray-50"
+                      >
+                        Screen 6
+                      </button>
+                      <button
+                        onClick={() => setCurrentStep('lets-get-started')}
+                        className="px-3 py-1 bg-white rounded-lg text-xs hover:bg-gray-50"
+                      >
+                        Screen 7
+                      </button>
+                      <button
+                        onClick={() => setCurrentStep('dashboard')}
+                        className="px-3 py-1 bg-white rounded-lg text-xs hover:bg-gray-50"
+                      >
+                        Dashboard
                       </button>
                     </div>
                   </div>
